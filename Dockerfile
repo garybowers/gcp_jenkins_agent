@@ -55,3 +55,6 @@ ENV GSUITE_URL=https://github.com/DeviaVir/terraform-provider-gsuite/releases/do
 RUN curl -fSL ${GSUITE_URL} -o /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz && \
     mkdir -p ${HOME}/.terraform.d/plugins/linux_amd64 && \
     tar -xvzf /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz -C ${HOME}/.terraform.d/plugins/linux_amd64
+
+### Touch .vault-token
+RUN touch ~/.vault-token && chmod 777 ~/.vault-token
