@@ -2,7 +2,7 @@ FROM debian:stretch
 
 ARG GCLOUD_SDK_VERSION=238.0.0
 ARG TERRAFORM_VERSION=0.11.13
-ARG VAULT_VERSION=1.0.1
+ARG VAULT_VERSION=1.0.3
 ARG GSUITE_TERRAFORM_VERSION=0.1.10
 
 ### Setup Debian
@@ -42,7 +42,6 @@ RUN echo ${TERRAFORM_URL} && \
     curl -fSL "${TERRAFORM_URL}" -o /bin/terraform.zip && \
     unzip /bin/terraform.zip -d /bin
 
-
 ### VAULT
 ENV VAULT_URL=https://releases.hashicorp.com/vault/$VAULT_VERSION/vault_${VAULT_VERSION}_linux_amd64.zip
 RUN curl -fSL "{$VAULT_URL}" -o /bin/vault.zip && \
@@ -53,8 +52,5 @@ RUN curl -fSL "{$VAULT_URL}" -o /bin/vault.zip && \
 ENV GSUITE_TERRAFORM_VERSION=$GSUITE_TERRAFORM_VERSION
 ENV GSUITE_URL=https://github.com/DeviaVir/terraform-provider-gsuite/releases/download/v${GSUITE_TERRAFORM_VERSION}/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz
 RUN curl -fSL ${GSUITE_URL} -o /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz && \
-    mkdir -p ${HOME}/.terraform.d/plugins/linux_amd64 && \
-    tar -xvzf /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz -C ${HOME}/.terraform.d/plugins/linux_amd64
-
-### Touch .vault-token
-RUN touch ~/.vault-token && chmod 777 ~/.vault-token
+    mkdir -p /.terraform.d/plugins/linux_amd64 && \
+    tar -xvzf /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz -C /.terraform.d/plugins/linux_amd64
