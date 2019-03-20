@@ -14,6 +14,7 @@ RUN apt-get -qqy update && apt-get install -qqy \
         apt-transport-https \
         lsb-release \
         openssh-client \
+        openssh-server \
         git \
         gnupg \
         ca-certificates \
@@ -22,6 +23,9 @@ RUN apt-get -qqy update && apt-get install -qqy \
         make \
         && easy_install -U pip && \
         pip install -U crcmod
+
+### Config user
+RUN groupadd -r gcpdev && useradd -r -g gcpdev gcpdev
 
 ### GCLOUD SDK
 ENV GCLOUD_SDK_VERSION=$GCLOUD_SDK_VERSION
