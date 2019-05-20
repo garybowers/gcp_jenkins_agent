@@ -64,4 +64,7 @@ RUN curl -fSL ${GSUITE_URL} -o /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM
 ENV HELM_VERSION=$HELM_VERSION
 ENV HELM_URL=https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz
 RUN curl -fSL ${HELM_URL} -o /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
-    tar -xvzf /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz -C /bin
+    tar -xvzf /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz -C /bin && \
+    ln -s /bin/linux-amd64/helm /bin/helm && \
+    ln -s /bin/linux-amd64/tiller /bin/tiller
+
