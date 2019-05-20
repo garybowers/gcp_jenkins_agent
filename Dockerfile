@@ -4,6 +4,7 @@ ARG GCLOUD_SDK_VERSION=243.0.0
 ARG TERRAFORM_VERSION=0.11.13
 ARG VAULT_VERSION=1.0.3
 ARG GSUITE_TERRAFORM_VERSION=0.1.10
+ARG HELM_VERSION=2.14.0
 
 ### Setup Debian
 RUN apt-get -qqy update && apt-get install -qqy \
@@ -58,3 +59,9 @@ ENV GSUITE_URL=https://github.com/DeviaVir/terraform-provider-gsuite/releases/do
 RUN curl -fSL ${GSUITE_URL} -o /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz && \
     mkdir -p /.terraform.d/plugins/linux_amd64 && \
     tar -xvzf /tmp/terraform-provider-gsuite_${GSUITE_TERRAFORM_VERSION}_linux_amd64.tgz -C /.terraform.d/plugins/linux_amd64
+
+### HELM
+ENV HELM_VERSION=$HELM_VERSION
+ENV HELM_URL=https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz
+RUN curl -fSL ${HELM_URL} -o /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
+    tar -xvzf /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz -C /bin
