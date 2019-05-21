@@ -67,5 +67,5 @@ RUN curl -fSL ${HELM_URL} -o /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     tar -xvzf /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz -C /bin && \
     ln -s /bin/linux-amd64/helm /bin/helm && \
     ln -s /bin/linux-amd64/tiller /bin/tiller && \
-    mkdir -p /root/.helm && chmod 0777 /root/.helm
+    mkdir -p /.helm && chmod 0777 /.helm
 
