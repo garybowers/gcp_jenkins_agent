@@ -1,6 +1,6 @@
 FROM debian:stretch
 
-ARG GCLOUD_SDK_VERSION=243.0.0
+ARG GCLOUD_SDK_VERSION=253.0.0
 ARG TERRAFORM_VERSION=0.11.13
 ARG VAULT_VERSION=1.0.3
 ARG GSUITE_TERRAFORM_VERSION=0.1.10
@@ -71,3 +71,8 @@ RUN curl -fSL ${HELM_URL} -o /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     helm init --client-only && \
     chmod -R 777 /.helm
 
+
+### INSPEC
+RUN curl -fSL https://packages.chef.io/files/stable/inspec/4.6.9/ubuntu/18.04/inspec_4.6.9-1_amd64.deb -o inspec.deb
+RUN ls && \
+    dpkg -i inspec.deb
