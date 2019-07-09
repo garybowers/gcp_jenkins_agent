@@ -73,6 +73,8 @@ RUN curl -fSL ${HELM_URL} -o /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 
 
 ### INSPEC
+ENV HAB_LICENSE=accept
+ENV CHEF_LICENSE=accept
 RUN curl -fSL https://packages.chef.io/files/stable/inspec/4.6.9/ubuntu/18.04/inspec_4.6.9-1_amd64.deb -o inspec.deb
 RUN ls && \
     dpkg -i inspec.deb
