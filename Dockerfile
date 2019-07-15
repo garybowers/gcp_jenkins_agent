@@ -79,3 +79,4 @@ RUN curl -fSL https://packages.chef.io/files/stable/inspec/4.6.9/ubuntu/18.04/in
 RUN ls && \
     dpkg -i inspec.deb
 RUN sudo mkdir /.chef && chmod -R 777 /.chef
+RUN sudo mkdir /.inspec && chmod -R 777 /.inspec
