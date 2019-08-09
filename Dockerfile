@@ -1,17 +1,24 @@
-FROM debian:stretch
+FROM debian:stretch-slim
 
 ARG GCLOUD_SDK_VERSION=257.0.0
 ARG TERRAFORM_VERSION=0.12.6
 ARG VAULT_VERSION=1.0.3
 ARG GSUITE_TERRAFORM_VERSION=0.1.10
 ARG HELM_VERSION=2.14.3
+ARG ANSIBLE_VERSION=2.2.1.0-2+deb9u1
+ARG AWSCLI_VERSION=1.16.182
+ARG AZURECLI_VERSION=2.0.66
+ARG PACKER_VERSION=1.4.1
+ARG INSPEC_VERSION=4.11.3
 
 ### Setup Debian
 RUN apt-get -qqy update && apt-get install -qqy \
+        apt-utils \
         curl \
         wget \
         python-dev \
         python-setuptools \
+        python-pip \
         apt-transport-https \
         lsb-release \
         openssh-client \
@@ -21,9 +28,9 @@ RUN apt-get -qqy update && apt-get install -qqy \
         ca-certificates \
         sudo \
         unzip \
-        make \
-        && easy_install -U pip && \
-        pip install -U crcmod
+        make
+
+RUN pip install --upgrade crcmod
 
 ### Config user
 RUN groupadd -r gcpdev && useradd -r -g gcpdev gcpdev
@@ -71,3 +78,36 @@ RUN curl -fSL ${HELM_URL} -o /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
     helm init --client-only && \
     chmod -R 777 /.helm
 
+### Ansible
+ENV ANSIBLE_VERSION=$ANSIBLE_VERSION
+RUN sudo apt-get install -y ansible=${ANSIBLE_VERSION}
+
+### Packer
+ENV PACKER_VERSION=$PACKER_VERSION
+ENV PACKER_URL="https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip"
+RUN echo ${PACKER_URL} && \
+    curl -fSL "${PACKER_URL}" -o /bin/packer.zip && \
+    unzip /bin/packer.zip -d /bin
+
+### AWS CLI
+ENV AWSCLI_VERSION=$AWSCLI_VERSION
+RUN pip install awscli==${AWSCLI_VERSION}
+
+### AZURE CLI
+ENV AZURECLI_VERSION=$AZURECLI_VERSION
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+### Powershell
+RUN sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' && \
+    sudo apt-get update -y && \
+    apt-get install -y --allow-unauthenticated powershell
+
+### INSPEC
+ENV HAB_LICENSE=accept
+ENV CHEF_LICENSE=accept
+ENV INSPEC_VERSION=$INSPEC_VERSION
+RUN curl -fSL https://packages.chef.io/files/stable/inspec/${INSPEC_VERSION}/ubuntu/18.04/inspec_${INSPEC_VERSION}-1_amd64.deb -o inspec.deb
+RUN ls && \
+    dpkg -i inspec.deb
+RUN sudo mkdir /.chef && chmod -R 777 /.chef
+RUN sudo mkdir /.inspec && chmod -R 777 /.inspec
