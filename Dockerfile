@@ -25,6 +25,8 @@ RUN apt-get -qqy update && apt-get install -qqy \
         && easy_install -U pip && \
         pip install -U crcmod
 
+RUN sudo mkdir -p /.config/gcloud/configurations
+
 ### Config user
 RUN groupadd -r gcpdev && useradd -r -g gcpdev gcpdev
 
