@@ -1,6 +1,6 @@
 FROM debian:stretch
 
-ARG GCLOUD_SDK_VERSION=253.0.0
+ARG GCLOUD_SDK_VERSION=258.0.0
 ARG TERRAFORM_VERSION=0.11.13
 ARG VAULT_VERSION=1.0.3
 ARG GSUITE_TERRAFORM_VERSION=0.1.10
@@ -8,6 +8,7 @@ ARG HELM_VERSION=2.14.0
 
 ### Setup Debian
 RUN apt-get -qqy update && apt-get install -qqy \
+        apt-utils \
         curl \
         wget \
         python-dev \
@@ -22,11 +23,14 @@ RUN apt-get -qqy update && apt-get install -qqy \
         sudo \
         unzip \
         make \
+        golang \
         && easy_install -U pip && \
         pip install -U crcmod
 
 RUN sudo mkdir -p /.config/gcloud/configurations && \
-		sudo chmod -R 777 /.config/gcloud
+    sudo mkdir -p /.gsutil && \
+		sudo chmod -R 777 /.config/gcloud && \
+    sudo chmod -R 777 /.gsutil
 
 ### Config user
 RUN groupadd -r gcpdev && useradd -r -g gcpdev gcpdev
