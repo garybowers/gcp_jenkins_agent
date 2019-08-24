@@ -1,7 +1,7 @@
 FROM debian:stretch
 
 ARG GCLOUD_SDK_VERSION=258.0.0
-ARG TERRAFORM_VERSION=0.11.13
+ARG TERRAFORM_VERSION=0.11.14
 ARG VAULT_VERSION=1.0.3
 ARG GSUITE_TERRAFORM_VERSION=0.1.10
 ARG HELM_VERSION=2.14.0
@@ -24,6 +24,7 @@ RUN apt-get -qqy update && apt-get install -qqy \
         unzip \
         make \
         golang \
+        software-properties-common \
         && easy_install -U pip && \
         pip install -U crcmod
 
@@ -87,3 +88,11 @@ RUN ls && \
     dpkg -i inspec.deb
 RUN sudo mkdir /.chef && chmod -R 777 /.chef
 RUN sudo mkdir /.inspec && chmod -R 777 /.inspec
+
+### Docker CE
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add - && \
+    sudo add-apt-repository \
+     "deb [arch=amd64] https://download.docker.com/linux/debian \
+     $(lsb_release -cs) \
+     stable"
+RUN sudo apt-get update -y && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
