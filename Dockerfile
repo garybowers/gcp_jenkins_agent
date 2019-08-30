@@ -111,3 +111,5 @@ RUN ls && \
     dpkg -i inspec.deb
 RUN sudo mkdir /.chef && chmod -R 777 /.chef
 RUN sudo mkdir /.inspec && chmod -R 777 /.inspec
+
+RUN sudo mkdir /.config && chmod -R 777 /.config
