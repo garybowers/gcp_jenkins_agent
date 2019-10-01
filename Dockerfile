@@ -1,24 +1,24 @@
 FROM debian:stretch-slim
 
-ARG GCLOUD_SDK_VERSION=259.0.0
-ARG TERRAFORM_VERSION=0.12.7
+ARG GCLOUD_SDK_VERSION=264.0.0
+ARG TERRAFORM_VERSION=0.12.9
 ARG VAULT_VERSION=1.0.3
-ARG GSUITE_TERRAFORM_VERSION=0.1.23
+ARG GSUITE_TERRAFORM_VERSION=0.1.28
 ARG HELM_VERSION=2.14.3
 ARG ANSIBLE_VERSION=2.2.1.0-2+deb9u1
 ARG AWSCLI_VERSION=1.16.182
 ARG AZURECLI_VERSION=2.0.66
 ARG PACKER_VERSION=1.4.1
-ARG INSPEC_VERSION=4.11.3
+ARG INSPEC_VERSION=4.16.0
 
 ### Setup Debian
-RUN apt-get -qqy update && apt-get install -qqy \
+RUN apt-get -qqy update && apt-get upgrade -qqy
+
+### Install base tools
+RUN apt-get install -qqy \
         apt-utils \
         curl \
         wget \
-        python-dev \
-        python-setuptools \
-        python-pip \
         apt-transport-https \
         lsb-release \
         openssh-client \
@@ -28,7 +28,16 @@ RUN apt-get -qqy update && apt-get install -qqy \
         ca-certificates \
         sudo \
         unzip \
-        make
+        make && \
+    apt-get clean -y
+
+RUN apt-get install -qqy \
+        python-dev \
+        python-setuptools \
+        python-pip \
+        python3-dev \
+        python3-pip && \
+    apt-get clean -y
 
 RUN pip install --upgrade crcmod
 
@@ -52,7 +61,8 @@ ENV TERRAFORM_VERSION=$TERRAFORM_VERSION
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 RUN echo ${TERRAFORM_URL} && \
     curl -fSL "${TERRAFORM_URL}" -o /bin/terraform.zip && \
-    unzip /bin/terraform.zip -d /bin
+    unzip /bin/terraform.zip -d /bin && \
+    rm -f /bin/terraform.zip
 
 ### VAULT
 ENV VAULT_URL=https://releases.hashicorp.com/vault/$VAULT_VERSION/vault_${VAULT_VERSION}_linux_amd64.zip
@@ -87,7 +97,8 @@ ENV PACKER_VERSION=$PACKER_VERSION
 ENV PACKER_URL="https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip"
 RUN echo ${PACKER_URL} && \
     curl -fSL "${PACKER_URL}" -o /bin/packer.zip && \
-    unzip /bin/packer.zip -d /bin
+    unzip /bin/packer.zip -d /bin && \
+    rm /bin/packer.zip
 
 ### AWS CLI
 ENV AWSCLI_VERSION=$AWSCLI_VERSION
@@ -102,6 +113,9 @@ RUN sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/micr
     sudo apt-get update -y && \
     apt-get install -y --allow-unauthenticated powershell
 
+### PYSNOW
+RUN pip3 install --upgrade pysnow
+
 ### INSPEC
 ENV HAB_LICENSE=accept
 ENV CHEF_LICENSE=accept
@@ -109,7 +123,12 @@ ENV INSPEC_VERSION=$INSPEC_VERSION
 RUN curl -fSL https://packages.chef.io/files/stable/inspec/${INSPEC_VERSION}/ubuntu/18.04/inspec_${INSPEC_VERSION}-1_amd64.deb -o inspec.deb
 RUN ls && \
     dpkg -i inspec.deb
+
+### Create empty folders
 RUN sudo mkdir /.chef && chmod -R 777 /.chef
 RUN sudo mkdir /.inspec && chmod -R 777 /.inspec
 
 RUN sudo mkdir /.config && chmod -R 777 /.config
+RUN sudo mkdir /.kube && chmod -R 777 /.kube
+
+RUN apt-get clean
