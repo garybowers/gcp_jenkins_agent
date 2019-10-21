@@ -1,15 +1,13 @@
 FROM debian:stretch-slim
 
-ARG GCLOUD_SDK_VERSION=264.0.0
-ARG TERRAFORM_VERSION=0.12.9
+ARG GCLOUD_SDK_VERSION=267.0.0
+ARG TERRAFORM_VERSION=0.12.12
 ARG VAULT_VERSION=1.0.3
-ARG GSUITE_TERRAFORM_VERSION=0.1.28
+ARG GSUITE_TERRAFORM_VERSION=0.1.34
 ARG HELM_VERSION=2.14.3
 ARG ANSIBLE_VERSION=2.2.1.0-2+deb9u1
-ARG AWSCLI_VERSION=1.16.182
-ARG AZURECLI_VERSION=2.0.66
-ARG PACKER_VERSION=1.4.1
 ARG INSPEC_VERSION=4.16.0
+ARG PACKER_VERSION=1.4.4
 
 ### Setup Debian
 RUN apt-get -qqy update && apt-get upgrade -qqy
@@ -91,27 +89,6 @@ RUN curl -fSL ${HELM_URL} -o /tmp/helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 ### Ansible
 ENV ANSIBLE_VERSION=$ANSIBLE_VERSION
 RUN sudo apt-get install -y ansible=${ANSIBLE_VERSION}
-
-### Packer
-ENV PACKER_VERSION=$PACKER_VERSION
-ENV PACKER_URL="https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip"
-RUN echo ${PACKER_URL} && \
-    curl -fSL "${PACKER_URL}" -o /bin/packer.zip && \
-    unzip /bin/packer.zip -d /bin && \
-    rm /bin/packer.zip
-
-### AWS CLI
-ENV AWSCLI_VERSION=$AWSCLI_VERSION
-RUN pip install awscli==${AWSCLI_VERSION}
-
-### AZURE CLI
-ENV AZURECLI_VERSION=$AZURECLI_VERSION
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-### Powershell
-RUN sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' && \
-    sudo apt-get update -y && \
-    apt-get install -y --allow-unauthenticated powershell
 
 ### PYSNOW
 RUN pip3 install --upgrade pysnow

@@ -1,8 +1,8 @@
 all:
 	docker build . -t garybowers/gcp_jenkins_agent:latest
-	docker tag garybowers/gcp_jenkins_agent:latest garybowers/gcp_jenkins_agent:3.5
+	docker tag garybowers/gcp_jenkins_agent:latest garybowers/gcp_jenkins_agent:3.7
 	docker push garybowers/gcp_jenkins_agent:latest
-	docker push garybowers/gcp_jenkins_agent:3.5
+	docker push garybowers/gcp_jenkins_agent:3.7
 
 build:
 	docker build . -t ${IMG_NAME}:${BUILD_NUMBER}
